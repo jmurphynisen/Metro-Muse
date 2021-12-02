@@ -13,18 +13,22 @@ import time
 import folium
 import MapClass
 import pandas as pd
+import requests
+from geopy.extra.rate_limiter import RateLimiter
+from geopy import Nominatim
 import PyQt5
 from PyQt5 import QtCore, QtGui, QtWidgets, QtWebEngineWidgets
 from PyQt5.QtWidgets import QLineEdit, QLabel, QVBoxLayout
 
 
 class Window(QtWidgets.QMainWindow):
+    master = pd.read_csv('master.csv')
     m = folium.Map(
         title='NYC',
         location=(40.767937,-73.982155), 
         zoom_start=13
         )
-    MapClass.initializeMarkers(m)
+    geocoder = 'http://maps.googleapis.com/maps/api/geocode/json'
 
     def __init__(self):
         super().__init__()
@@ -85,15 +89,25 @@ class Window(QtWidgets.QMainWindow):
         vlay.addStretch()
         lay.addWidget(button_container)
         lay.addWidget(self.view, stretch=1)
+        submitButton.clicked.connect(self.onClick)
 
     def onClick(self):
         t = time.strftime("%H:%M:%S", time.localtime())
         locationValue = self.locationTextBox.text()
         genreValue = self.genreTextBox.text()
         levelValue = self.levelTextBox.text()
-
+        print(levelValue)
         coords = re.findall("\d+\.\d+", locationValue)
         MapClass.addMarker(self.m, coords[0], coords[1], levelValue, t)
+        newRow = {'Genre': genreValue, 'Lon': coords[1], 'Lat': coords[0], 'Borough': 'N/A', 'aLevel': levelValue, 'Time': t}
+        self.master.append(newRow, ignore_index=True)
+        self.master.to_csv('temp.csv')
+"""
+        requestCoord = requests.get(self.geocoder, params=locationValue)
+        request = requestCoord.json()['results']
+        coords = request[0]['geometry']['location']
+        MapClass.addMarker(self.m, coords['lng'], coords['lat'], levelValue, t)
+"""
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
