@@ -11,6 +11,7 @@ import io
 import sys
 import time
 import folium
+from folium import plugins
 import MapClass
 import pandas as pd
 import PyQt5
@@ -36,6 +37,12 @@ class Window(QtWidgets.QMainWindow):
         #create map and fill with markers from NYC Open Data
         data = io.BytesIO()
         MapClass.initializeMarkers(self.m)
+        plugins.MousePosition(
+            position="topright",
+            separator=", ",
+            num_digits=20,
+            prefix="Coordinates:",
+        ).add_to(self.m)
         self.m.save(data, close_file=False)
         
         self.view.setHtml(data.getvalue().decode())
@@ -94,9 +101,8 @@ class Window(QtWidgets.QMainWindow):
         locationValue = self.locationTextBox.text()
         genreValue = self.genreTextBox.text()
         levelValue = self.levelTextBox.text()
-        print(levelValue)
-        coords = re.findall("\d+\.\d+", locationValue)
-        MapClass.addMarker(self.m, coords[0], coords[1], levelValue, t)
+        coords = re.findall("-?\d+\.\d+", locationValue)
+        MapClass.addMarker(self.m, coords[0], coords[1], levelValue, t, genreValue)
         newRow = {'Genre': genreValue, 'Lon': coords[1], 'Lat': coords[0], 'Borough': 'N/A', 'aLevel': levelValue, 'Time': t}
         self.master = self.master.append(newRow, ignore_index=True)
 
@@ -123,3 +129,4 @@ if __name__ == "__main__":
         sys.exit(app.exec())
     except SystemExit:
         print('window closed')
+   
