@@ -18,4 +18,4 @@ If you cannot see map, I have uploaded reference map with all initial data as an
   I first set up the GUI with text fields for coordinates, genre, and audiences level, as well as a submit button and a window for the Folium map. When the PyQt window is intialized, it populates the map with markers via the master CSV file, which is read in as a dataframe. In order for the user to get the coordinates of where they saw a busker they wanted to report, they can use the MousePosition funct ion which displays in the top right of the map and can copy from there, and input the genre and audience level. Once the submit button is pressed, the input is added as a marker onto the map, appended to the master dataframe, and the map is re-initialized to show the new report.
   
 **Citations**:
-  https://data.cityofnewyork.us/Transportation/Bi-Annual-Pedestrian-Counts/2de2-6x2h
+  https://data.cityofnewyork.us/Transportation/Bi-Annual-Pedestrian-Counts/2de2-6x2h, https://learndataanalysis.org/display-folium-maps-in-pyqt5/
