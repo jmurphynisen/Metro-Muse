@@ -17,38 +17,41 @@ def addReport(genre, borough, alevel):
     t = time.strftime("%H:%M:%S", time.localtime())
     master.append([{'Genre': genre}, {'Borough': borough}, {'aLevel': alevel}, {'Time': t}])
 
-def addMarker(map, lat, lon, level, t):
-        if(level == 'Low'):
-            folium.CircleMarker(
-                popup=t,
-                location = [lat, lon],
-                radius = 10,
-                draggable = True,
-                color = 'green'
-            ).add_to(map)
+def addMarker(map, lat, lon, level, t, genre):
+    popup = t + ", " + genre
+    if(level == 'Low'):
+        folium.CircleMarker(
+            popup=popup,
+            location = [lat, lon],
+            radius = 10,
+            draggable = True,
+            fill=True,
+            color = 'green'
+        ).add_to(map)
 
-        elif(level == 'Medium'):
-            folium.CircleMarker(
-                popup=t,
-                location = [lat, lon],
-                radius = 10,
-                draggable = True,
-                color = 'yellow'
-            ).add_to(map)
+    elif(level == 'Medium'):
+        folium.CircleMarker(
+            popup=popup,
+            location = [lat, lon],
+            radius = 10,
+            draggable = True,
+            fill=True,
+            color = 'yellow'
+        ).add_to(map)
 
-        else:
-            folium.CircleMarker(
-                popup=t,
-                location = [lat, lon],
-                radius = 50,
-                draggable = True,
-                color = 'red'
-            ).add_to(map)  
+    else:
+        folium.CircleMarker(
+            popup=popup,
+            location = [lat, lon],
+            radius = 10,
+            draggable = True,
+            color = 'red'
+        ).add_to(map)  
 
 def initializeMarkers(map):
     for i in range(0, len(master)):
         t = time.strftime("%H:%M:%S", time.localtime())
-        addMarker(map, master.iloc[i]['Lat'], master.iloc[i]['Lon'], 'Medium', t)  
+        addMarker(map, master.iloc[i]['Lat'], master.iloc[i]['Lon'], 'Medium', t, 'Unknown')  
 """
 def makeClusters(map, gdf, popupList):
     #Create empty lists to contain the point coordinates and the point pop-up information
